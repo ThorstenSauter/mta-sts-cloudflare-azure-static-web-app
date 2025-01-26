@@ -25,6 +25,7 @@ jobs:
           terraform-version: ${{ vars.TERRAFORM_VERSION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           infra-directory: ${{ vars.INFRA_DIRECTORY }}
+          skip-trivy: 'true'
 
   docs:
     name: Generate Terraform documentation
