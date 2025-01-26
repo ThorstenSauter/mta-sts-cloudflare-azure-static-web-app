@@ -1,4 +1,4 @@
-﻿name: Terraform validate
+﻿name: Terraform validate and generate documentation
 
 on:
   pull_request:
