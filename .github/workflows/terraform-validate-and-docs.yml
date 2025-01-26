@@ -1,0 +1,44 @@
+﻿name: Terraform validate
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate Terraform configuration
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Validate Terraform configuration
+        uses: ThorstenSauter/terraform-actions/validate@v1
+        with:
+          terraform-version: ${{ vars.TERRAFORM_VERSION }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          infra-directory: ${{ vars.INFRA_DIRECTORY }}
+
+  docs:
+    name: Generate Terraform documentation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Render terraform docs inside the README.md and push changes back to PR branch
+        uses: terraform-docs/gh-actions@v1.3.0
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          git-push: "true"

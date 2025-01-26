@@ -1,0 +1,6 @@
+﻿version: STSv1
+mode: ${mode}
+%{for mx_record in mx_records ~}
+mx: ${mx_record}
+%{endfor ~}
+max_age: ${max_age}
