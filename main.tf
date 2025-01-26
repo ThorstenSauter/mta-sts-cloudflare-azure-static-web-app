@@ -1,9 +1,10 @@
 locals {
   content_path     = "${path.root}/.terraform/tmp/wwwroot"
   deployment_image = "mcr.microsoft.com/appsvc/staticappsclient:stable"
+  index_hash       = data.local_file.index.content_md5
   policy_id        = md5("${var.domain}-${var.mta_sts_mode}-${join(",", var.mx_hosts)}-${var.policy_lifetime}")
   policy_path      = "${local.content_path}/.well-known/mta-sts.txt"
-  index_hash       = data.local_file.index.content_md5
+  secret_path      = "${path.root}/.terraform/tmp/secret"
 }
 
 data "local_file" "index" {
@@ -104,7 +105,10 @@ resource "null_resource" "deploy_content" {
   ]
 
   provisioner "local-exec" {
-    command = "echo ::add-mask::${nonsensitive(azurerm_static_web_app.main.api_key)}"
+    command = "echo $DEPLOYMENT_TOKEN >> ${local.secret_path}"
+    environment = {
+      DEPLOYMENT_TOKEN = azurerm_static_web_app.main.api_key
+    }
   }
 
   provisioner "local-exec" {
@@ -116,7 +120,11 @@ resource "null_resource" "deploy_content" {
       "--app /app",
       "--skipAppBuild",
       "--skipApiBuild",
-      "--apiToken ${nonsensitive(azurerm_static_web_app.main.api_key)}",
+      "--apiToken $(cat ${local.secret_path})",
     ])
+  }
+
+  provisioner "local-exec" {
+    command = "rm -f ${local.secret_path}"
   }
 }
