@@ -104,6 +104,10 @@ resource "null_resource" "deploy_content" {
   ]
 
   provisioner "local-exec" {
+    command = "echo ::add-mask::${nonsensitive(azurerm_static_web_app.main.api_key)}"
+  }
+
+  provisioner "local-exec" {
     command = join(" ", [
       "docker run",
       "-v ${abspath(local.content_path)}:/app",
@@ -112,7 +116,7 @@ resource "null_resource" "deploy_content" {
       "--app /app",
       "--skipAppBuild",
       "--skipApiBuild",
-      "--apiToken ${azurerm_static_web_app.main.api_key}",
+      "--apiToken ${nonsensitive(azurerm_static_web_app.main.api_key)}",
     ])
   }
 }
