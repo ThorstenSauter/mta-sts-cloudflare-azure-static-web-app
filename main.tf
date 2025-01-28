@@ -92,8 +92,8 @@ resource "cloudflare_record" "smtp_tls" {
   comment = "TLS reporting addresses"
 }
 
-resource "null_resource" "deploy_content" {
-  triggers = {
+resource "terraform_data" "deploy_content" {
+  input = {
     index_hash = local.index_hash
     policy_id  = local.policy_id
   }
