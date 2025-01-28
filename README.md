@@ -64,7 +64,7 @@ An example of how to use this module can be found in the [example](./example) di
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
 | <a name="provider_cloudflare"></a> [cloudflare](#provider\_cloudflare) | ~> 4.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | ~> 2.5 |
-| <a name="provider_null"></a> [null](#provider\_null) | ~> 3.0 |
+| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 | <a name="provider_time"></a> [time](#provider\_time) | ~> 0.12.1 |
 
 ## Modules
@@ -83,7 +83,7 @@ No modules.
 | [cloudflare_record.smtp_tls](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/record) | resource |
 | [local_file.index](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [local_file.rendered_template](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
-| [null_resource.deploy_content](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [terraform_data.deploy_content](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [time_sleep.record_creation](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [cloudflare_zone.this](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zone) | data source |
 | [local_file.index](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) | data source |
@@ -109,5 +109,6 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_deployment_directory"></a> [deployment\_directory](#output\_deployment\_directory) | The directory where the site for the MTA-STS website is synthesized. |
 | <a name="output_deployment_token"></a> [deployment\_token](#output\_deployment\_token) | The deployment token used to deploy code from CI pipelines. |
 <!-- END_TF_DOCS -->
