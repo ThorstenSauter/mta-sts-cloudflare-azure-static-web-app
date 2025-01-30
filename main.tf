@@ -66,7 +66,7 @@ resource "azurerm_static_web_app_custom_domain" "primary" {
 }
 
 resource "cloudflare_dns_record" "mta_sts" {
-  zone_id = data.cloudflare_zone.this.id
+  zone_id = data.cloudflare_zone.this.zone_id
   name    = "mta-sts"
   type    = "CNAME"
   content = azurerm_static_web_app.main.default_host_name
@@ -82,7 +82,7 @@ resource "time_sleep" "record_creation" {
 }
 
 resource "cloudflare_dns_record" "mta_sts_policy" {
-  zone_id = data.cloudflare_zone.this.id
+  zone_id = data.cloudflare_zone.this.zone_id
   name    = "_mta-sts"
   type    = "TXT"
   content = "v=STSv1; id=${local.policy_id};"
@@ -91,7 +91,7 @@ resource "cloudflare_dns_record" "mta_sts_policy" {
 }
 
 resource "cloudflare_dns_record" "smtp_tls" {
-  zone_id = data.cloudflare_zone.this.id
+  zone_id = data.cloudflare_zone.this.zone_id
   name    = "_smtp._tls"
   type    = "TXT"
   content = "v=TLSRPTv1; rua=${join(",", var.rua)}"
