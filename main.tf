@@ -34,7 +34,7 @@ data "cloudflare_zones" "search" {
 }
 
 data "cloudflare_zone" "this" {
-  zone_id = data.cloudflare_zones.search.result.0.id
+  zone_id = data.cloudflare_zones.search.result[0].id
 }
 
 resource "azurerm_resource_group" "main" {
