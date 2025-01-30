@@ -29,8 +29,12 @@ resource "local_file" "rendered_template" {
   filename = local.policy_path
 }
 
-data "cloudflare_zone" "this" {
+data "cloudflare_zones" "search" {
   name = var.domain
+}
+
+data "cloudflare_zone" "this" {
+  zone_id = data.cloudflare_zones.search.result[0].id
 }
 
 resource "azurerm_resource_group" "main" {
@@ -61,34 +65,37 @@ resource "azurerm_static_web_app_custom_domain" "primary" {
   validation_type   = "cname-delegation"
 }
 
-resource "cloudflare_record" "mta_sts" {
+resource "cloudflare_dns_record" "mta_sts" {
   zone_id = data.cloudflare_zone.this.id
   name    = "mta-sts"
   type    = "CNAME"
   content = azurerm_static_web_app.main.default_host_name
+  ttl     = 1
   comment = "MTA-STS policy hosting site"
 }
 
 resource "time_sleep" "record_creation" {
   create_duration = var.wait_for_dns_propagation
   triggers = {
-    domain_name = cloudflare_record.mta_sts.hostname
+    domain_name = "${cloudflare_dns_record.mta_sts.name}.${data.cloudflare_zone.this.name}"
   }
 }
 
-resource "cloudflare_record" "mta_sts_policy" {
+resource "cloudflare_dns_record" "mta_sts_policy" {
   zone_id = data.cloudflare_zone.this.id
   name    = "_mta-sts"
   type    = "TXT"
   content = "v=STSv1; id=${local.policy_id};"
+  ttl     = 1
   comment = "Indicates a MTA-STS policy being present for this domain"
 }
 
-resource "cloudflare_record" "smtp_tls" {
+resource "cloudflare_dns_record" "smtp_tls" {
   zone_id = data.cloudflare_zone.this.id
   name    = "_smtp._tls"
   type    = "TXT"
   content = "v=TLSRPTv1; rua=${join(",", var.rua)}"
+  ttl     = 1
   comment = "TLS reporting addresses"
 }
 
