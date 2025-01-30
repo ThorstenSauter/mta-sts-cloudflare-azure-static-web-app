@@ -100,7 +100,7 @@ resource "cloudflare_dns_record" "smtp_tls" {
 }
 
 resource "terraform_data" "deploy_content" {
-  input = {
+  triggers_replace = {
     index_hash = local.index_hash
     policy_id  = local.policy_id
   }
