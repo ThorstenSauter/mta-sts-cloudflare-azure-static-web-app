@@ -29,12 +29,10 @@ resource "local_file" "rendered_template" {
   filename = local.policy_path
 }
 
-data "cloudflare_zones" "search" {
-  name = var.domain
-}
-
 data "cloudflare_zone" "this" {
-  zone_id = data.cloudflare_zones.search.result[0].id
+  filter = {
+    name = var.domain
+  }
 }
 
 resource "azurerm_resource_group" "main" {
