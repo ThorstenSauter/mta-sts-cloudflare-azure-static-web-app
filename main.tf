@@ -65,7 +65,7 @@ resource "azurerm_static_web_app_custom_domain" "primary" {
 
 resource "cloudflare_dns_record" "mta_sts" {
   zone_id = data.cloudflare_zone.this.zone_id
-  name    = "mta-sts"
+  name    = "mta-sts.${data.cloudflare_zone.this.name}"
   type    = "CNAME"
   content = azurerm_static_web_app.main.default_host_name
   ttl     = 1
@@ -75,13 +75,13 @@ resource "cloudflare_dns_record" "mta_sts" {
 resource "time_sleep" "record_creation" {
   create_duration = var.wait_for_dns_propagation
   triggers = {
-    domain_name = "${cloudflare_dns_record.mta_sts.name}.${data.cloudflare_zone.this.name}"
+    domain_name = cloudflare_dns_record.mta_sts.name
   }
 }
 
 resource "cloudflare_dns_record" "mta_sts_policy" {
   zone_id = data.cloudflare_zone.this.zone_id
-  name    = "_mta-sts"
+  name    = "_mta-sts.${data.cloudflare_zone.this.name}"
   type    = "TXT"
   content = "v=STSv1; id=${local.policy_id};"
   ttl     = 1
@@ -90,7 +90,7 @@ resource "cloudflare_dns_record" "mta_sts_policy" {
 
 resource "cloudflare_dns_record" "smtp_tls" {
   zone_id = data.cloudflare_zone.this.zone_id
-  name    = "_smtp._tls"
+  name    = "_smtp._tls.${data.cloudflare_zone.this.name}"
   type    = "TXT"
   content = "v=TLSRPTv1; rua=${join(",", var.rua)}"
   ttl     = 1
