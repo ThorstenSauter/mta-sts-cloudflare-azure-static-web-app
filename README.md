@@ -41,7 +41,7 @@ This module has a few requirements:
 
 ## Example
 
-An example of how to use this module can be found in the [example](./example) directory.
+An example of how to use this module is available in the [example](./example) directory.
 
 ## Module documentation
 
