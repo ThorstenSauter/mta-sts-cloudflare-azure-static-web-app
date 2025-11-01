@@ -4,7 +4,6 @@ locals {
   index_hash       = data.local_file.index.content_md5
   policy_id        = md5("${var.domain}-${var.mta_sts_mode}-${join(",", var.mx_hosts)}-${var.policy_lifetime}")
   policy_path      = "${local.content_path}/.well-known/mta-sts.txt"
-  secret_path      = "${path.root}/.terraform/tmp/secret"
 }
 
 data "local_file" "index" {
@@ -110,26 +109,16 @@ resource "terraform_data" "deploy_content" {
   ]
 
   provisioner "local-exec" {
-    command = "echo $DEPLOYMENT_TOKEN >> ${local.secret_path}"
-    environment = {
-      DEPLOYMENT_TOKEN = azurerm_static_web_app.main.api_key
-    }
-  }
-
-  provisioner "local-exec" {
     command = join(" ", [
       "docker run",
       "-v ${abspath(local.content_path)}:/app",
+      "-e DEPLOYMENT_TOKEN=${azurerm_static_web_app.main.api_key}",
       local.deployment_image,
       "/bin/staticsites/StaticSitesClient upload",
       "--app /app",
       "--skipAppBuild",
       "--skipApiBuild",
-      "--apiToken $(cat ${local.secret_path})",
+      "--apiToken $DEPLOYMENT_TOKEN",
     ])
-  }
-
-  provisioner "local-exec" {
-    command = "rm -f ${local.secret_path}"
   }
 }
