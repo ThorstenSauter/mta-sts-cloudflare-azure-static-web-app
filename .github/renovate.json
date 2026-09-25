@@ -2,5 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>ThorstenSauter/renovate-config"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update the Azure Static Web Apps CLI version pinned in the npx deploy command",
+      "managerFilePatterns": [
+        "/\\.tf$/"
+      ],
+      "matchStrings": [
+        "\"(?<depName>@azure/static-web-apps-cli)@(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "npm"
+    }
   ]
 }
