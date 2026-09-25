@@ -56,7 +56,6 @@ An example of how to use this module is available in the [example](./example) di
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 5.0 |
 | <a name="requirement_cloudflare"></a> [cloudflare](#requirement\_cloudflare) | ~> 5.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.5 |
-| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.14.0 |
 
 ## Providers
@@ -89,7 +88,6 @@ No modules.
 | [time_sleep.record_creation](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [cloudflare_zone.this](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zone) | data source |
 | [local_file.index](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) | data source |
-| [local_file.policy_template](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 
