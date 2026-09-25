@@ -30,7 +30,7 @@ jobs:
           terraform_version: ${{ vars.TERRAFORM_VERSION }}
           terraform_wrapper: false
       - name: Terraform init -backend=false
-        run: terraform init
+        run: terraform init -backend=false
       - name: Terraform formatting check
         id: format
         shell: bash
