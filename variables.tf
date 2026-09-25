@@ -64,7 +64,7 @@ variable "mx_hosts" {
 
   validation {
     condition = alltrue([
-      for host in var.mx_hosts : can(regex("^^(\\*\\.)?([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$", host))
+      for host in var.mx_hosts : can(regex("^(\\*\\.)?([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$", host))
     ])
     error_message = "Each MX host must match the pattern '*.example.com' or 'example.com'. See https://datatracker.ietf.org/doc/html/rfc8461#section-4.1"
   }
@@ -77,7 +77,7 @@ variable "policy_lifetime" {
 
   validation {
     condition     = var.policy_lifetime >= 0
-    error_message = "Policy lifetime must be positive."
+    error_message = "Policy lifetime must not be negative."
   }
 
   validation {
@@ -97,7 +97,7 @@ variable "rua" {
 
   validation {
     condition     = can([for loc in var.rua : regex("^(mailto|https):", loc)])
-    error_message = "All locations must start with either the `mailto:` or `https` schema."
+    error_message = "All locations must start with either the `mailto:` or `https:` schema."
   }
 }
 

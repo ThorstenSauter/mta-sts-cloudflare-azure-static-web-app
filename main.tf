@@ -1,18 +1,18 @@
 locals {
-  content_path     = "${path.root}/.terraform/tmp/wwwroot"
-  deployment_image = "mcr.microsoft.com/appsvc/staticappsclient:stable"
-  index_hash       = data.local_file.index.content_md5
-  policy_id        = md5("${var.domain}-${var.mta_sts_mode}-${join(",", var.mx_hosts)}-${var.policy_lifetime}")
-  policy_path      = "${local.content_path}/.well-known/mta-sts.txt"
-  secret_path      = "${path.root}/.terraform/tmp/secret"
+  content_path = "${path.root}/.terraform/tmp/wwwroot"
+  index_hash   = data.local_file.index.content_md5
+  policy_content = templatefile("${path.module}/mta-sts.tftpl", {
+    mode       = var.mta_sts_mode,
+    mx_records = var.mx_hosts,
+    max_age    = var.policy_lifetime
+  })
+  policy_id       = md5(local.policy_content)
+  policy_path     = "${local.content_path}/.well-known/mta-sts.txt"
+  swa_cli_package = "@azure/static-web-apps-cli@2.0.10"
 }
 
 data "local_file" "index" {
   filename = "${path.module}/index.html"
-}
-
-data "local_file" "policy_template" {
-  filename = "${path.module}/mta-sts.tftpl"
 }
 
 resource "local_file" "index" {
@@ -21,11 +21,7 @@ resource "local_file" "index" {
 }
 
 resource "local_file" "rendered_template" {
-  content = templatefile(data.local_file.policy_template.filename, {
-    mode       = var.mta_sts_mode,
-    mx_records = var.mx_hosts,
-    max_age    = var.policy_lifetime
-  })
+  content  = local.policy_content
   filename = local.policy_path
 }
 
@@ -110,26 +106,13 @@ resource "terraform_data" "deploy_content" {
   ]
 
   provisioner "local-exec" {
-    command = "echo $DEPLOYMENT_TOKEN >> ${local.secret_path}"
-    environment = {
-      DEPLOYMENT_TOKEN = azurerm_static_web_app.main.api_key
-    }
-  }
-
-  provisioner "local-exec" {
     command = join(" ", [
-      "docker run",
-      "-v ${abspath(local.content_path)}:/app",
-      local.deployment_image,
-      "/bin/staticsites/StaticSitesClient upload",
-      "--app /app",
-      "--skipAppBuild",
-      "--skipApiBuild",
-      "--apiToken $(cat ${local.secret_path})",
+      "npx --yes ${local.swa_cli_package}",
+      "deploy \"${abspath(local.content_path)}\"",
+      "--env production",
     ])
-  }
-
-  provisioner "local-exec" {
-    command = "rm -f ${local.secret_path}"
+    environment = {
+      SWA_CLI_DEPLOYMENT_TOKEN = azurerm_static_web_app.main.api_key
+    }
   }
 }

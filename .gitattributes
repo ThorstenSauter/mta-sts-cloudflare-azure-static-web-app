@@ -2,3 +2,5 @@
 *.hcl text eol=lf
 *.go text eol=lf
 *.tf text eol=lf
+*.tftpl text eol=lf
+*.html text eol=lf

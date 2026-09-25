@@ -8,8 +8,8 @@ It hosts the `MTA-STS` policy file on
 an [Azure Static Web App](https://learn.microsoft.com/en-us/azure/static-web-apps/).
 
 > [!IMPORTANT]  
-> The module uses the `mcr.microsoft.com/appsvc/staticappsclient:stable` Docker image to deploy the static web app
-> whenever changes to the policy site occur.
+> The module uses the [Azure Static Web Apps CLI](https://github.com/Azure/static-web-apps-cli) via `npx` to deploy
+> the static web app whenever changes to the policy site occur.
 
 ## Requirements
 
@@ -20,7 +20,9 @@ This module has a few requirements:
 - The Cloudflare provider requires the following permissions
   - `zone.Read` for the specified zone
   - `zone.DNS.Edit` for the specified zone
-- Docker needs to be installed on the machine running the module in order to deploy the Azure Static Web App content
+- Node.js (with `npx`) needs to be installed on the machine running the module in order to deploy the Azure Static Web
+  App content. The first deployment needs network access to download the Static Web Apps CLI from npm and its
+  deployment binary from Azure
 
 ## Provisioned resources
 
@@ -32,12 +34,12 @@ This module has a few requirements:
 
 ### Cloudflare
 
-- `cloudflare_record` - The record for the `MTA-STS` policy, `TLS-RPT`, and the `mta-sts` subdomain
+- `cloudflare_dns_record` - The record for the `MTA-STS` policy, `TLS-RPT`, and the `mta-sts` subdomain
 
 ### Local files
 
-- `${outputs.site_content_path}/.well-known/mta-sts.txt` - The `MTA-STS` policy file
-- `${outputs.site_content_path}/index.html` - A generic index file for the static web app
+- `${outputs.deployment_directory}/.well-known/mta-sts.txt` - The `MTA-STS` policy file
+- `${outputs.deployment_directory}/index.html` - A generic index file for the static web app
 
 ## Example
 
@@ -54,7 +56,6 @@ An example of how to use this module is available in the [example](./example) di
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 5.0 |
 | <a name="requirement_cloudflare"></a> [cloudflare](#requirement\_cloudflare) | ~> 5.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.5 |
-| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.0 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.14.0 |
 
 ## Providers
@@ -87,7 +88,6 @@ No modules.
 | [time_sleep.record_creation](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [cloudflare_zone.this](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zone) | data source |
 | [local_file.index](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) | data source |
-| [local_file.policy_template](https://registry.terraform.io/providers/hashicorp/local/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 
