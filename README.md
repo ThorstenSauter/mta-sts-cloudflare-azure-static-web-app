@@ -1,4 +1,4 @@
-﻿# MTA-STS with Cloudflare DNS and Azure Static Web App hosting
+# MTA-STS with Cloudflare DNS and Azure Static Web App hosting
 
 ## Goal
 
@@ -51,7 +51,7 @@ An example of how to use this module is available in the [example](./example) di
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.10.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 5.0 |
 | <a name="requirement_cloudflare"></a> [cloudflare](#requirement\_cloudflare) | ~> 5.0 |
@@ -61,7 +61,7 @@ An example of how to use this module is available in the [example](./example) di
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 5.0 |
 | <a name="provider_cloudflare"></a> [cloudflare](#provider\_cloudflare) | ~> 5.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | ~> 2.5 |
@@ -75,7 +75,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azurerm_resource_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_static_web_app.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/static_web_app) | resource |
 | [azurerm_static_web_app_custom_domain.primary](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/static_web_app_custom_domain) | resource |
@@ -92,7 +92,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_azure_location"></a> [azure\_location](#input\_azure\_location) | The Azure region where the resources will be deployed. | `string` | n/a | yes |
 | <a name="input_azure_resource_group_name"></a> [azure\_resource\_group\_name](#input\_azure\_resource\_group\_name) | The name of the resource group the Azure Static Web App gets deployed to. | `string` | n/a | yes |
 | <a name="input_azure_static_web_app_name"></a> [azure\_static\_web\_app\_name](#input\_azure\_static\_web\_app\_name) | The name of the Azure Static Web App. | `string` | n/a | yes |
@@ -108,7 +108,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_deployment_directory"></a> [deployment\_directory](#output\_deployment\_directory) | The directory where the site for the MTA-STS website is synthesized. |
 | <a name="output_deployment_token"></a> [deployment\_token](#output\_deployment\_token) | The deployment token used to deploy code from CI pipelines. |
 <!-- END_TF_DOCS -->
