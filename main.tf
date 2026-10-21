@@ -6,9 +6,10 @@ locals {
     mx_records = var.mx_hosts,
     max_age    = var.policy_lifetime
   })
-  policy_id       = md5(local.policy_content)
-  policy_path     = "${local.content_path}/.well-known/mta-sts.txt"
-  swa_cli_package = "@azure/static-web-apps-cli@2.0.10"
+  policy_id   = md5(local.policy_content)
+  policy_path = "${local.content_path}/.well-known/mta-sts.txt"
+  # The SWA CLI and all of its dependencies are installed from the committed lockfile in swa-cli/.
+  swa_cli_path = "${path.root}/.terraform/tmp/swa-cli"
 }
 
 data "local_file" "index" {
@@ -18,6 +19,16 @@ data "local_file" "index" {
 resource "local_file" "index" {
   content  = file("${path.module}/index.html")
   filename = "${local.content_path}/index.html"
+}
+
+resource "local_file" "swa_cli_package" {
+  content  = file("${path.module}/swa-cli/package.json")
+  filename = "${local.swa_cli_path}/package.json"
+}
+
+resource "local_file" "swa_cli_lockfile" {
+  content  = file("${path.module}/swa-cli/package-lock.json")
+  filename = "${local.swa_cli_path}/package-lock.json"
 }
 
 resource "local_file" "rendered_template" {
@@ -102,12 +113,17 @@ resource "terraform_data" "deploy_content" {
   depends_on = [
     azurerm_static_web_app_custom_domain.primary,
     local_file.index,
-    local_file.rendered_template
+    local_file.rendered_template,
+    local_file.swa_cli_package,
+    local_file.swa_cli_lockfile
   ]
 
   provisioner "local-exec" {
+    # Install scripts stay off: the only package that has one is keytar, an optional credential store the
+    # token-based deploy never loads.
     command = join(" ", [
-      "npx --yes ${local.swa_cli_package}",
+      "npm ci --prefix \"${abspath(local.swa_cli_path)}\" --ignore-scripts --no-audit --no-fund",
+      "&& npm exec --prefix \"${abspath(local.swa_cli_path)}\" --no -- swa",
       "deploy \"${abspath(local.content_path)}\"",
       "--env production",
     ])
