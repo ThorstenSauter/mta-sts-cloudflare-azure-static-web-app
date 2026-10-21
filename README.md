@@ -8,8 +8,9 @@ It hosts the `MTA-STS` policy file on
 an [Azure Static Web App](https://learn.microsoft.com/en-us/azure/static-web-apps/).
 
 > [!IMPORTANT]  
-> The module uses the [Azure Static Web Apps CLI](https://github.com/Azure/static-web-apps-cli) via `npx` to deploy
-> the static web app whenever changes to the policy site occur.
+> The module uses the [Azure Static Web Apps CLI](https://github.com/Azure/static-web-apps-cli) to deploy the static web
+> app whenever changes to the policy site occur. The CLI and its dependencies are installed from the lockfile in
+> `swa-cli/`.
 
 ## Requirements
 
@@ -20,9 +21,9 @@ This module has a few requirements:
 - The Cloudflare provider requires the following permissions
   - `zone.Read` for the specified zone
   - `zone.DNS.Edit` for the specified zone
-- Node.js (with `npx`) needs to be installed on the machine running the module in order to deploy the Azure Static Web
-  App content. The first deployment needs network access to download the Static Web Apps CLI from npm and its
-  deployment binary from Azure
+- Node.js (with `npm`) needs to be installed on the machine running the module in order to deploy the Azure Static Web
+  App content. Each deployment needs network access to install the Static Web Apps CLI from npm, and the first one
+  also downloads its deployment binary from Azure
 
 ## Provisioned resources
 
@@ -84,6 +85,8 @@ No modules.
 | [cloudflare_dns_record.smtp_tls](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/dns_record) | resource |
 | [local_file.index](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [local_file.rendered_template](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
+| [local_file.swa_cli_lockfile](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
+| [local_file.swa_cli_package](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [terraform_data.deploy_content](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [time_sleep.record_creation](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [cloudflare_zone.this](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zone) | data source |
