@@ -15,7 +15,7 @@ concurrency:
 jobs:
   lint:
     name: Lint workflows
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     permissions:
       contents: read
     timeout-minutes: 10
@@ -35,7 +35,7 @@ jobs:
 
   validate:
     name: Validate Terraform configuration
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     permissions:
       contents: read
       pull-requests: write
@@ -53,7 +53,7 @@ jobs:
 
   docs:
     name: Check Terraform documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     permissions:
       contents: read
     timeout-minutes: 10
@@ -66,11 +66,18 @@ jobs:
         # Installed from the release rather than via terraform-docs/gh-actions, whose Docker image bundles its own
         # terraform-docs version: the check has to run the same version the README is generated with locally, or
         # formatting changes between versions show up as drift.
+        # Picks the archive for the runner's architecture, so the job runs on x64 and arm64 alike.
         env:
           TERRAFORM_DOCS_VERSION: v0.24.0
-          TERRAFORM_DOCS_SHA256: 9005daf969de0b50134493a2c00078b49f5f5b39d021cda7c89bf4d4f3d776d3
+          TERRAFORM_DOCS_SHA256_AMD64: 9005daf969de0b50134493a2c00078b49f5f5b39d021cda7c89bf4d4f3d776d3
+          TERRAFORM_DOCS_SHA256_ARM64: d12bd7b73c1fc9c64efc79f8157dd713dabd559f1ecf3cfc0f42e32279a155fd
         run: |
-          archive="terraform-docs-${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz"
+          case "$RUNNER_ARCH" in
+            X64) arch=amd64; TERRAFORM_DOCS_SHA256="$TERRAFORM_DOCS_SHA256_AMD64" ;;
+            ARM64) arch=arm64; TERRAFORM_DOCS_SHA256="$TERRAFORM_DOCS_SHA256_ARM64" ;;
+            *) echo "::error::No terraform-docs checksum for runner architecture $RUNNER_ARCH."; exit 1 ;;
+          esac
+          archive="terraform-docs-${TERRAFORM_DOCS_VERSION}-linux-${arch}.tar.gz"
           curl -fsSLo "$RUNNER_TEMP/$archive" \
             "https://github.com/terraform-docs/terraform-docs/releases/download/${TERRAFORM_DOCS_VERSION}/$archive"
           echo "$TERRAFORM_DOCS_SHA256  $RUNNER_TEMP/$archive" | sha256sum -c -
@@ -88,7 +95,7 @@ jobs:
 
   checks-passed:
     name: CI passed
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-26.04-arm
     needs: [ lint, validate, docs ]
     if: always()
     timeout-minutes: 5
