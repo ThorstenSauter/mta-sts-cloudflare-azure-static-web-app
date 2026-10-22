@@ -21,12 +21,13 @@ resource "local_file" "index" {
   filename = "${local.content_path}/index.html"
 }
 
-resource "local_file" "swa_cli_package" {
+# Sensitive only to keep the contents out of plans: the lockfile alone runs to about a megabyte.
+resource "local_sensitive_file" "swa_cli_package" {
   content  = file("${path.module}/swa-cli/package.json")
   filename = "${local.swa_cli_path}/package.json"
 }
 
-resource "local_file" "swa_cli_lockfile" {
+resource "local_sensitive_file" "swa_cli_lockfile" {
   content  = file("${path.module}/swa-cli/package-lock.json")
   filename = "${local.swa_cli_path}/package-lock.json"
 }
@@ -114,8 +115,8 @@ resource "terraform_data" "deploy_content" {
     azurerm_static_web_app_custom_domain.primary,
     local_file.index,
     local_file.rendered_template,
-    local_file.swa_cli_package,
-    local_file.swa_cli_lockfile
+    local_sensitive_file.swa_cli_package,
+    local_sensitive_file.swa_cli_lockfile
   ]
 
   provisioner "local-exec" {

@@ -85,8 +85,8 @@ No modules.
 | [cloudflare_dns_record.smtp_tls](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/dns_record) | resource |
 | [local_file.index](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [local_file.rendered_template](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
-| [local_file.swa_cli_lockfile](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
-| [local_file.swa_cli_package](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
+| [local_sensitive_file.swa_cli_lockfile](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
+| [local_sensitive_file.swa_cli_package](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/sensitive_file) | resource |
 | [terraform_data.deploy_content](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [time_sleep.record_creation](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [cloudflare_zone.this](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zone) | data source |
