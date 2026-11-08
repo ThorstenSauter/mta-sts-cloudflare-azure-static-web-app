@@ -35,5 +35,5 @@ To exercise the module end to end, run `terraform init/plan/apply` in `example/`
 - `main` requires signed commits and squash merges. Release tags are protected (admins only, no updates or deletions) and releases are immutable, because consumers pin `?ref=X.Y.Z`.
 - `.terraform.lock.hcl` is intentionally gitignored because this is a module.
 - Releases are GitHub releases with plain `X.Y.Z` tags (no `v` prefix), following SemVer. Breaking changes bump the major version.
-- GitHub Actions are pinned to commit SHAs with a version comment. Dependency updates come from Renovate (`chore(deps): ...` commits). Commit messages follow Conventional Commits.
+- GitHub Actions are referenced by full version tag (`@vX.Y.Z`); `.github/workflows/actions.lock` locks the commits, so after changing a `uses:` line by hand, run `gh actions-lock` and commit the lockfile. Dependency updates come from Renovate (`chore(deps): ...` commits). Commit messages follow Conventional Commits.
 - `.editorconfig`: LF line endings, 2-space indent, UTF-8.
